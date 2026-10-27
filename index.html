@@ -1,0 +1,983 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Understanding OCD | Dzmitry Bulaty</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --background: #e0f0e8;
+            --surface: #fffefa;
+            --teal: #176b68;
+            --dark: #19373b;
+            --muted: #587278;
+            --peach: #f7c9b8;
+            --line: #c6ddd5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--dark);
+            font-family: "DM Sans", sans-serif;
+            line-height: 1.7;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* FIX: Navigation stays visible while scrolling */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            background: rgba(224, 240, 232, 0.94);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(25, 55, 59, 0.10);
+        }
+
+        .navbar {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 18px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .author {
+            font-family: "Manrope", sans-serif;
+            font-weight: 800;
+            font-size: 19px;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--teal);
+        }
+
+        .nav-links .nav-cta {
+            background: var(--teal);
+            color: white;
+            padding: 10px 17px;
+            border-radius: 30px;
+        }
+
+        .nav-links .nav-cta:hover {
+            background: var(--dark);
+            color: white;
+        }
+
+        /* HERO: Two separate columns prevent text overlap */
+        .hero {
+            max-width: 1240px;
+            min-height: 660px;
+            margin: 0 auto;
+            padding: 76px 36px 90px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            align-items: center;
+            gap: 56px;
+        }
+
+        .hero-text {
+            min-width: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--teal);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 24px;
+            height: 2px;
+            background: var(--teal);
+        }
+
+        h1, h2, h3 {
+            font-family: "Manrope", sans-serif;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+        }
+
+        h1 {
+            font-size: clamp(44px, 5.4vw, 72px);
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        h1 span {
+            color: var(--teal);
+        }
+
+        .hero-description {
+            max-width: 510px;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.9;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 22px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-primary {
+            background: var(--teal);
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: var(--dark);
+        }
+
+        .button-secondary {
+            border: 1px solid var(--line);
+            background: rgba(255, 254, 250, 0.5);
+        }
+
+        /* Illustration is contained in its own column */
+        .hero-art {
+            position: relative;
+            width: 100%;
+            max-width: 530px;
+            min-width: 0;
+            aspect-ratio: 1 / 1;
+            justify-self: end;
+            display: grid;
+            place-items: center;
+            isolation: isolate;
+        }
+
+        .art-orbit {
+            position: absolute;
+            border: 1px solid rgba(23, 107, 104, 0.20);
+            border-radius: 50%;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            z-index: -1;
+        }
+
+        .orbit-two {
+            width: 80%;
+        }
+
+        .orbit-three {
+            width: 60%;
+        }
+
+        .art-core {
+            width: 48%;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: var(--teal);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 25px 70px rgba(23, 107, 104, 0.18);
+            position: relative;
+            z-index: 1;
+        }
+
+        .bulb {
+            width: 52%;
+            height: 52%;
+        }
+
+        .art-note {
+            position: absolute;
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 20px 22px;
+            box-shadow: 0 18px 55px rgba(25, 55, 59, 0.07);
+            z-index: 2;
+        }
+
+        .note-main {
+            left: 0;
+            bottom: 12%;
+            width: 48%;
+        }
+
+        .note-main strong {
+            display: block;
+            font-family: "Manrope", sans-serif;
+            font-size: 17px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .note-main p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .note-check {
+            top: 12%;
+            right: 7%;
+            width: 78px;
+            height: 78px;
+            display: grid;
+            place-items: center;
+            transform: rotate(8deg);
+            color: var(--teal);
+            font-size: 35px;
+        }
+
+        .note-clock {
+            bottom: 16%;
+            right: 1%;
+            width: 90px;
+            height: 90px;
+            display: grid;
+            place-items: center;
+            background: var(--peach);
+            color: #795749;
+            font-size: 35px;
+            transform: rotate(-7deg);
+        }
+
+        /* General content sections */
+        .section {
+            padding: 100px 36px;
+            scroll-margin-top: 90px;
+        }
+
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-light {
+            background: var(--surface);
+        }
+
+        .section-heading {
+            max-width: 690px;
+            margin-bottom: 48px;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(32px, 4vw, 48px);
+            margin-bottom: 18px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .definition-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .info-card {
+            padding: 34px;
+            background: var(--background);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+        }
+
+        .card-number {
+            display: inline-block;
+            color: var(--teal);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+
+        .info-card h3 {
+            font-size: 23px;
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+        }
+
+        .info-card p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .symptom-card {
+            padding: 28px;
+            border-radius: 20px;
+            background: white;
+            border: 1px solid var(--line);
+        }
+
+        .symptom-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            background: #d5e9df;
+            color: var(--teal);
+            font-size: 23px;
+            margin-bottom: 20px;
+        }
+
+        .symptom-card h3 {
+            font-size: 21px;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .symptom-card p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .callout {
+            margin-top: 34px;
+            background: #f9e4da;
+            border-radius: 20px;
+            padding: 28px 32px;
+        }
+
+        .callout strong {
+            display: block;
+            margin-bottom: 6px;
+            font-family: "Manrope", sans-serif;
+        }
+
+        .callout p {
+            color: #725b52;
+            font-size: 15px;
+        }
+
+        .treatment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .treatment-card {
+            padding: 28px;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+        }
+
+        .treatment-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .treatment-card p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .support-panel {
+            padding: 55px;
+            background: var(--teal);
+            color: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .support-panel h2 {
+            font-size: clamp(30px, 4vw, 43px);
+            margin-bottom: 15px;
+        }
+
+        .support-panel p {
+            max-width: 600px;
+            color: #d5e9e4;
+        }
+
+        .support-panel .button {
+            background: white;
+            color: var(--teal);
+            white-space: nowrap;
+        }
+
+        footer {
+            padding: 30px 36px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        footer a {
+            color: var(--teal);
+            text-decoration: underline;
+        }
+
+        /* Responsive layout for tablets and phones */
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 16px 24px;
+            }
+
+            .nav-links {
+                gap: 16px;
+            }
+
+            .hero {
+                gap: 28px;
+                padding: 60px 24px 75px;
+            }
+
+            .art-note {
+                padding: 15px;
+            }
+
+            .note-check {
+                width: 62px;
+                height: 62px;
+            }
+
+            .note-clock {
+                width: 70px;
+                height: 70px;
+            }
+
+            .treatment-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            html {
+                scroll-padding-top: 135px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 13px 20px;
+            }
+
+            .author {
+                font-size: 17px;
+            }
+
+            .nav-links {
+                width: 100%;
+                gap: 10px 18px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+
+            .nav-links .nav-cta {
+                padding: 6px 11px;
+            }
+
+            .hero {
+                grid-template-columns: minmax(0, 1fr);
+                min-height: auto;
+                padding: 60px 24px 70px;
+                gap: 38px;
+            }
+
+            .hero-text {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: clamp(42px, 12vw, 60px);
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .hero-art {
+                width: 100%;
+                max-width: 430px;
+                justify-self: center;
+            }
+
+            .note-main {
+                width: 47%;
+                bottom: 8%;
+            }
+
+            .note-main strong {
+                font-size: 14px;
+            }
+
+            .note-main p {
+                font-size: 11px;
+            }
+
+            .section {
+                padding: 70px 22px;
+            }
+
+            .definition-grid,
+            .symptom-grid,
+            .treatment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-card {
+                padding: 27px;
+            }
+
+            .support-panel {
+                padding: 32px 25px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            footer {
+                padding: 25px 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <header class="site-header">
+        <div class="navbar">
+            <a class="author" href="#home">Dzmitry Bulaty.</a>
+
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="#about">About OCD</a>
+                <a href="#symptoms">Symptoms</a>
+                <a href="#causes">Causes</a>
+                <a href="#treatment">Treatment</a>
+                <a class="nav-cta" href="#support">Get support</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- HERO / FIRST PAGE -->
+        <section class="hero" id="home">
+
+            <div class="hero-text">
+                <div class="eyebrow">Mental health awareness</div>
+
+                <h1>
+                    Understanding<br>
+                    <span>OCD.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Obsessive-Compulsive Disorder is more than just
+                    liking things clean or organized. It is a mental
+                    health condition that can affect how a person
+                    thinks, feels, and lives every day. Learning about
+                    OCD is the first step toward understanding it.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#about" class="button button-primary">
+                        Learn about OCD →
+                    </a>
+
+                    <a href="#symptoms" class="button button-secondary">
+                        Explore symptoms
+                    </a>
+                </div>
+            </div>
+
+            <!-- DECORATIVE ILLUSTRATION -->
+            <div class="hero-art" aria-label="Illustration representing hope and mental health">
+
+                <div class="art-orbit"></div>
+                <div class="art-orbit orbit-two"></div>
+                <div class="art-orbit orbit-three"></div>
+
+                <div class="art-core">
+                    <svg class="bulb" viewBox="0 0 100 120"
+                         fill="none" xmlns="http://www.w3.org/2000/svg"
+                         aria-hidden="true">
+
+                        <path d="M50 8C26 8 9 26 9 49C9 65 17 77 29 85V98H71V85C83 77 91 65 91 49C91 26 74 8 50 8Z"
+                              stroke="#FFFFFF" stroke-width="7"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+
+                        <path d="M32 48C37 36 43 32 50 32C57 32 63 36 68 48"
+                              stroke="#FFFFFF" stroke-width="7"
+                              stroke-linecap="round"/>
+
+                        <circle cx="50" cy="59" r="5"
+                                fill="#F7A58B"/>
+
+                        <path d="M34 108H66"
+                              stroke="#FFFFFF" stroke-width="7"
+                              stroke-linecap="round"/>
+
+                    </svg>
+                </div>
+
+                <div class="art-note note-main">
+                    <strong>You are not alone.</strong>
+                    <p>Understanding and support can make a difference.</p>
+                </div>
+
+                <div class="art-note note-check" aria-hidden="true">
+                    ✓
+                </div>
+
+                <div class="art-note note-clock" aria-hidden="true">
+                    ◷
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ABOUT OCD -->
+        <section class="section section-light" id="about">
+            <div class="section-inner">
+
+                <div class="section-heading">
+                    <div class="eyebrow">01 — The basics</div>
+                    <h2>What is OCD?</h2>
+
+                    <p>
+                        OCD stands for Obsessive-Compulsive Disorder.
+                        It is a mental health condition that can cause
+                        unwanted thoughts and repeated actions that are
+                        difficult to control.
+                    </p>
+                </div>
+
+                <div class="definition-grid">
+
+                    <article class="info-card">
+                        <span class="card-number">01 / OBSESSIONS</span>
+                        <h3>Unwanted thoughts</h3>
+                        <p>
+                            Obsessions are unwanted thoughts, fears, or
+                            images that keep coming back. For example,
+                            a person may constantly worry about germs,
+                            danger, or making a mistake.
+                        </p>
+                    </article>
+
+                    <article class="info-card">
+                        <span class="card-number">02 / COMPULSIONS</span>
+                        <h3>Repeated actions</h3>
+                        <p>
+                            Compulsions are repeated actions or mental
+                            routines a person feels they must do.
+                            For example, they may wash their hands
+                            many times or repeatedly check a locked door.
+                        </p>
+                    </article>
+
+                </div>
+
+                <div class="callout">
+                    <strong>OCD is not just a habit.</strong>
+                    <p>
+                        These thoughts and actions can take a lot of time,
+                        cause stress, and make daily life harder. OCD is
+                        not a person's fault, and effective treatment is
+                        available.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SYMPTOMS -->
+        <section class="section" id="symptoms">
+            <div class="section-inner">
+
+                <div class="section-heading">
+                    <div class="eyebrow">02 — Signs to know</div>
+                    <h2>Common symptoms</h2>
+
+                    <p>
+                        OCD affects people in different ways. These are
+                        some examples of what a person with OCD may
+                        experience.
+                    </p>
+                </div>
+
+                <div class="symptom-grid">
+
+                    <article class="symptom-card">
+                        <div class="symptom-icon">↻</div>
+                        <h3>Repeated checking</h3>
+                        <p>
+                            Checking doors, appliances, or other things
+                            again and again because of fear that something
+                            bad might happen.
+                        </p>
+                    </article>
+
+                    <article class="symptom-card">
+                        <div class="symptom-icon">✳</div>
+                        <h3>Fear of germs</h3>
+                        <p>
+                            Feeling very worried about dirt, germs, or
+                            getting sick and feeling a strong need to
+                            clean or wash.
+                        </p>
+                    </article>
+
+                    <article class="symptom-card">
+                        <div class="symptom-icon">◎</div>
+                        <h3>Unwanted thoughts</h3>
+                        <p>
+                            Having upsetting thoughts that keep returning,
+                            even when the person does not want to think
+                            about them.
+                        </p>
+                    </article>
+
+                    <article class="symptom-card">
+                        <div class="symptom-icon">≋</div>
+                        <h3>Need for things to feel right</h3>
+                        <p>
+                            Feeling strong discomfort when things seem
+                            uneven, out of order, or not done in a
+                            certain way.
+                        </p>
+                    </article>
+
+                </div>
+
+                <div class="callout">
+                    <strong>Remember:</strong>
+                    <p>
+                        Having one of these experiences does not
+                        automatically mean someone has OCD. A qualified
+                        health professional can help with diagnosis.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CAUSES -->
+        <section class="section section-light" id="causes">
+            <div class="section-inner">
+
+                <div class="section-heading">
+                    <div class="eyebrow">03 — Understanding why</div>
+                    <h2>What causes OCD?</h2>
+
+                    <p>
+                        There is no single known cause of OCD. Researchers
+                        believe several things may play a role.
+                    </p>
+                </div>
+
+                <div class="definition-grid">
+
+                    <article class="info-card">
+                        <span class="card-number">BIOLOGY</span>
+                        <h3>Brain and genetics</h3>
+                        <p>
+                            Brain processes and family history may affect
+                            a person's chance of developing OCD.
+                            Scientists are still studying the exact causes.
+                        </p>
+                    </article>
+
+                    <article class="info-card">
+                        <span class="card-number">LIFE EXPERIENCES</span>
+                        <h3>Stress and life events</h3>
+                        <p>
+                            Stressful experiences may make OCD symptoms
+                            start or become worse. However, stress alone
+                            does not explain every case of OCD.
+                        </p>
+                    </article>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TREATMENT -->
+        <section class="section" id="treatment">
+            <div class="section-inner">
+
+                <div class="section-heading">
+                    <div class="eyebrow">04 — Finding help</div>
+                    <h2>OCD can be treated.</h2>
+
+                    <p>
+                        OCD can be difficult, but people can learn ways
+                        to manage their symptoms and improve their lives.
+                    </p>
+                </div>
+
+                <div class="treatment-grid">
+
+                    <article class="treatment-card">
+                        <h3>Therapy</h3>
+                        <p>
+                            Cognitive behavioral therapy (CBT) can help
+                            people change how they respond to unwanted
+                            thoughts and fears.
+                        </p>
+                    </article>
+
+                    <article class="treatment-card">
+                        <h3>ERP treatment</h3>
+                        <p>
+                            Exposure and Response Prevention helps people
+                            face fears step by step without performing
+                            their usual compulsions.
+                        </p>
+                    </article>
+
+                    <article class="treatment-card">
+                        <h3>Medication</h3>
+                        <p>
+                            A health professional may recommend medicine
+                            to help reduce OCD symptoms. Treatment depends
+                            on each person's needs.
+                        </p>
+                    </article>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SUPPORT -->
+        <section class="section section-light" id="support">
+            <div class="section-inner">
+
+                <div class="support-panel">
+                    <div>
+                        <h2>Asking for help is okay.</h2>
+
+                        <p>
+                            If OCD is affecting your daily life, consider
+                            talking to a doctor or mental health professional.
+                            You do not have to handle everything alone.
+                        </p>
+                    </div>
+
+                    <a class="button"
+                       href="https://iocdf.org/"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        Find resources ↗
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>
+            Created by Dzmitry Bulaty · Mental Health Awareness Project
+        </p>
+
+        <p style="margin-top: 8px;">
+            Learn more:
+            <a href="https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd"
+               target="_blank"
+               rel="noopener noreferrer">
+                National Institute of Mental Health
+            </a>
+        </p>
+
+        <p style="margin-top: 8px;">
+            This website is for educational purposes and is not a substitute
+            for professional medical advice.
+        </p>
+    </footer>
+
+</body>
+</html>
